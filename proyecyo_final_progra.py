@@ -17,7 +17,7 @@ En el siguiente bloque de codigo podemos observar que se crea la tupla "tablero"
 
 # Tupla con la información del tablero
 tablero = (
-    (9, 9),
+    (9, 9), # Dimensiones del tablero (filas, columnas)
     ('*', 1, 0, 0, 1, 2, 2, 1, 0),
     (2, 2, 1, 0, 1, '*', '*', 2, 0),
     (1, '*', 1, 0, 1, 3, '*', 2, 0),
@@ -42,9 +42,11 @@ print("^----------------------------------------------------^")
 
 #Lectura previa del tablero
 archivo = open("tablero.txt", "r")
+# Leemos la primera línea para obtener las dimensiones del tablero
 filas_columnas = int(archivo.readline().strip().split(',')[0])
 print(f"Tablero de {filas_columnas} columnas y {filas_columnas} filas: ")
 print("\n")
+# Mostramos el contenido del tablero
 print(archivo.read())
 archivo.close()
 print("^----------------------------------------------------^")
@@ -55,19 +57,25 @@ En el siguiente bloque de codigo podemos observar que se define una función lla
 """
 
 def cargar_tablero():
+# Carga los datos del tablero desde el archivo 'tablero.txt'
+## Retorna el número de filas, columnas y el tablero como una lista bidimensional.
     tablero = []  # Tablero inicia en blanco
     filas = columnas = 0  # Filas y columnas inician en 0
     # Lectura del archivo
     try:
         with open("tablero.txt", "r") as archivo:
+            # Leemos las dimensiones del tablero desde la primera linea.
             filas, columnas = map(int, archivo.readline().strip().split(","))
+            # Iteramos sobre las filas del archivo y las agregamos al tablero.
             for _ in range(filas):
                 fila = archivo.readline().strip().split(",")
                 tablero.append(fila)
     # Validación de errores de carga de los datos
     except FileNotFoundError:
+        # Manejamos el caso en que el archivo no se encuentra.
         print("Error: No se encontró el archivo tablero.txt.")
         print("^----------------------------------------------------^")
+        # Verificamos si se pudieron cargar los datos exitosamente.
     if filas > 0 and columnas > 0:
         print(f"¡Excelente {usuario} , tablero cargado exitosamente!")
         print("^----------------------------------------------------^")
@@ -81,14 +89,22 @@ def cargar_tablero():
 filas, columnas, tablero = cargar_tablero()
 print(f"Filas: {filas} y columnas: {columnas}")
 
-"""# Juego:"""
+usuario = ("") # Variable vacia para guardar el nombre del usuario cuando se inicia el juego
 
+"""# Juego:
+
+Estructura General del juego.
+"""
+
+# Presentacion del juego.
 print(f"Juego de busca minas \n")
 print("^----------------------------------------------------^")
 print("Para iniciar ingrese su nombre de usuario:")
 usuario = input("")
 print("^----------------------------------------------------^")
 
+# Funcion para mostrar el tablero actualizado.
+## Va mostrar el tablero actualizado, revelando las casillas destapadas y mostrando las marcadas con "?".
 def mostrar_tablero_actualizado(tablero, destapadas, marcadas):
     for i, fila in enumerate(tablero):
         for j, valor in enumerate(fila):
@@ -100,6 +116,10 @@ def mostrar_tablero_actualizado(tablero, destapadas, marcadas):
                 print("-", end=" ")
         print()
 
+# Funcion para destapar una casilla en el tablero.
+## Destapara la casilla en las coordenadas dadas y realiza acciones según el contenido de la casilla.
+## Devuelvera 'repetida' si la casilla ya ha sido destapada, 'marcada' si la casilla se ha marcado,
+## 'mina' si se destapa una mina y 'seguro' si la casilla se destapa sin problema alguno.
 def destapar_casilla(tablero, destapadas, marcadas, fila, columna, simbolo=None):
     if (fila, columna) in destapadas:
         print(f"Alerta {usuario} : Esta casilla ya ha sido destapada.")
@@ -118,12 +138,18 @@ def destapar_casilla(tablero, destapadas, marcadas, fila, columna, simbolo=None)
         mostrar_tablero_actualizado(tablero, destapadas, marcadas)
         return 'mina'
     else:
-        print(f"Casilla destapada: {tablero[fila][columna]}")  # Muestra el número de minas adyacentes
+        print(f"Casilla destapada: {tablero[fila][columna]}")  # Muestra la casilla destapada y el número de minas adyacentes
 
     return 'seguro'
 
+# Funcion para validar coordenadas dentro del rango del tablero
+## Verificacion si las coordenadas dadas están dentro del rango del tablero.
+
 def validar_coordenadas(filas, columnas, fila, columna):
     return 0 <= fila < filas and 0 <= columna < columnas
+
+# Funcion principal para jugar al buscaminas
+## Es la funcion principal que controla el flujo del juego.
 
 def jugar():
     filas, columnas, tablero = cargar_tablero()
@@ -158,7 +184,7 @@ def jugar():
             elif resultado == 'seguro':
                 minas_restantes = sum(fila.count('*') for fila in tablero) - len(destapadas)
                 if minas_restantes == 0:
-                    print(f"¡WOW, felicidades {usario} ganaste!")
+                    print(f"¡WOW, felicidades {usuario} ganaste!")
                     print("^----------------------------------------------------^")
                     mostrar_tablero_actualizado(tablero, destapadas)
                     break
@@ -167,6 +193,9 @@ def jugar():
         else:
             print(f"Error {usuario} : Coordenadas fuera de rango, por favor ingrese las coordenadas dentro del rango ({filas} , {columnas})")
             print("^----------------------------------------------------^")
+
+# Funcion principal del programa.
+## Funcion principal que presenta el menú y controla el flujo general del programa.
 
 def main():
     while True:
@@ -193,7 +222,7 @@ def main():
                 print("^----------------------------------------------------^")
 
         elif opcion == "c":
-             print(f"¡Gracias {usuario} , fin del programa!")
+             print(f"¡Un gusto {usuario} , fin del programa!")
              print("^----------------------------------------------------^")
              break
         else:
@@ -202,6 +231,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-"""# Pruebas"""
-
